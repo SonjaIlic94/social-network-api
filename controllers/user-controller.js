@@ -46,7 +46,7 @@ module.exports = {
             })
             .catch(err => res.status(400).json(err));
     },
-    // delete pizza
+    // delete user
     deleteUser({ params }, res) {
         User.findOneAndDelete({ _id: params.id })
             .then(dbUserData => {
@@ -57,5 +57,30 @@ module.exports = {
                 res.json(dbUserData);
             })
             .catch(err => res.status(400).json(err));
+    },
+    // add friend to user
+    addFriend({ params }, res) {
+        User.findOneAndUpdate({ _id: params.id }, { $push: { friends: params.friendid } }, { new: true })
+            .then(dbUserData => {
+                if (!dbUserData) {
+                    res.status(404).json({ message: 'No user found with this id!' });
+                    return;
+                }
+                res.json(dbuserData);
+            })
+            .catch(err => res.status(400).json(err));
+    },
+    //remove friend from user
+    removeFriend({ params }, res) {
+        User.findOneAndUpdate({ _id: params.id }, { $pull: { friends: params.friendid } }, { new: true })
+            .then(dbUserData => {
+                if (!dbUserData) {
+                    res.status(404).json({ message: 'No user found with this id!' });
+                    return;
+                }
+                res.json(dbuserData);
+            })
+            .catch(err => res.status(400).json(err));
+
     }
-};
+}
