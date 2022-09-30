@@ -23,6 +23,7 @@ router
     .delete(deleteThought);
 
 router
+    //.route('/api/thoughts/:thoughtId/reactions') ??
     .route('/:id/reactions')
     .post(createReaction)
 
