@@ -9,7 +9,7 @@ const {
     removeReaction
 } = require('../../controllers/thought-controller');
 
-// Set up GET all and POST at /api/users
+// Set up GET all and POST at /api/thoughts
 router
     .route('/')
     .get(getAllThoughts)
