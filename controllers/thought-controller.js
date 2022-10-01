@@ -21,8 +21,8 @@ module.exports = {
                 if (!dbThoughtData) {
                     res.status(404).json({ message: 'No thoughts found with this id!' });
                     return;
-                }
-                res.json(dbThoughtData);
+                } res.json(dbThoughtData);
+
             })
             .catch(err => {
                 console.log(err);
@@ -39,7 +39,7 @@ module.exports = {
                     { $push: { thoughts: dbThoughtData._id } },
                     { new: true }
                 )
-            })
+            }).then(dbThoughtData => res.json(dbThoughtData))
             .catch(err => res.status(400).json(err));
     },
     // update Thought by id
@@ -67,10 +67,11 @@ module.exports = {
             .catch(err => res.status(400).json(err));
     },
     //create a reaction
-    createReaction({ body }, res) {
-        Thought.findOneAndUpdate({ _id: params.id },
+    createReaction({ params, body }, res) {
+        Thought.findOneAndUpdate({ _id: params.thoughtId },
             { $push: { reactions: { body } } },
             { new: true })
+            .then(console.log("i am running"))
             .then(dbThoughtData => {
                 if (!dbThoughtData) {
                     res.status(404).json({ message: 'No thought found with this id!' });
@@ -78,13 +79,17 @@ module.exports = {
                 }
                 res.json(dbThoughtData);
             })
-            .catch(err => res.status(400).json(err));
+            .catch((err) => {
+                console.log(err);
+                console.log('err running');
+                res.status(400).json(err)
+            });
     },
 
     // remove a reaction
     removeReaction({ params }, res) {
-        Thought.findOneAndUpdate({ _id: params.id },
-            { $pull: { reactions: { reactionId: params.reactionsid } } },
+        Thought.findOneAndUpdate({ _id: params.thoughtId },
+            { $pull: { reactions: { reactionId: params.reactionsId } } },
             { new: true })
             .then(dbThoughtData => {
                 if (!dbThoughtData) {
